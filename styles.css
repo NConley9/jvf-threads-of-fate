@@ -1,0 +1,687 @@
+/* ============================================
+   Custom Properties
+   ============================================ */
+:root {
+    /* Core palette */
+    --bg-deep: #060610;
+    --bg-dark: #0b0b16;
+    --bg-card: #0f0f1a;
+
+    /* Gold spectrum */
+    --gold: #c9a84c;
+    --gold-bright: #e4c76b;
+    --gold-dim: #8a7233;
+    --gold-faint: rgba(201, 168, 76, 0.15);
+    --gold-glow: rgba(201, 168, 76, 0.25);
+
+    /* Frost accent */
+    --frost: #4a7c7e;
+
+    /* Text */
+    --text: #e8e0d0;
+    --text-muted: #a09882;
+    --text-dim: #6b6355;
+
+    /* Document card */
+    --parchment: #1e1c16;
+    --parchment-text: #c4b898;
+    --stamp-red: rgba(160, 50, 50, 0.45);
+
+    /* Typography */
+    --font-display: 'Cinzel Decorative', serif;
+    --font-heading: 'Cinzel', serif;
+    --font-body: 'Cormorant Garamond', 'Georgia', serif;
+    --font-mono: 'Special Elite', 'Courier New', monospace;
+
+    /* Spacing */
+    --page-pad: clamp(1rem, 5vw, 3rem);
+    --card-pad: clamp(1.5rem, 4vw, 3rem);
+}
+
+
+/* ============================================
+   Reset & Base
+   ============================================ */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--text);
+    background: var(--bg-deep);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.8;
+}
+
+
+/* ============================================
+   Atmospheric Layers
+   ============================================ */
+
+/* Particle canvas */
+#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Vignette */
+.vignette {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 35%,
+        rgba(6, 6, 16, 0.55) 65%,
+        rgba(6, 6, 16, 0.92) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Fog layers */
+.fog {
+    position: fixed;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.fog--1 {
+    background:
+        radial-gradient(ellipse at 25% 50%, rgba(201, 168, 76, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 25%, rgba(201, 168, 76, 0.02) 0%, transparent 40%);
+    animation: fogDrift1 35s ease-in-out infinite alternate;
+}
+
+.fog--2 {
+    background:
+        radial-gradient(ellipse at 65% 60%, rgba(74, 124, 126, 0.03) 0%, transparent 45%),
+        radial-gradient(ellipse at 15% 75%, rgba(74, 124, 126, 0.02) 0%, transparent 35%);
+    animation: fogDrift2 28s ease-in-out infinite alternate;
+}
+
+/* Yggdrasil tree */
+.yggdrasil {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(80vw, 520px);
+    height: min(85vh, 750px);
+    color: var(--gold);
+    opacity: 0.03;
+    z-index: 0;
+    pointer-events: none;
+    animation: treeBreathe 10s ease-in-out infinite;
+}
+
+
+/* ============================================
+   Page Layout
+   ============================================ */
+.page {
+    position: relative;
+    z-index: 10;
+    max-width: 740px;
+    margin: 0 auto;
+    padding: var(--page-pad);
+    padding-top: clamp(2.5rem, 10vh, 7rem);
+    padding-bottom: clamp(3rem, 10vh, 8rem);
+}
+
+
+/* ============================================
+   Header
+   ============================================ */
+.header {
+    text-align: center;
+    margin-bottom: clamp(2.5rem, 7vh, 5rem);
+}
+
+.runes {
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    letter-spacing: 0.55em;
+    color: var(--gold-dim);
+    opacity: 0.5;
+    user-select: none;
+    line-height: 1;
+}
+
+.runes:first-child {
+    margin-bottom: 0.85rem;
+}
+
+.runes:nth-child(3) {
+    margin-top: 0.85rem;
+}
+
+.title {
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 5vw, 3rem);
+    font-weight: 400;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    line-height: 1.3;
+    text-shadow:
+        0 0 25px rgba(201, 168, 76, 0.25),
+        0 0 50px rgba(201, 168, 76, 0.08);
+}
+
+/* Title letter-spacing animation */
+html.js .title {
+    letter-spacing: 0.5em;
+    animation: titleLetters 1.6s ease-out 0.5s forwards;
+}
+
+/* Ornamental line with diamond */
+.header__ornament {
+    width: 180px;
+    height: 1px;
+    margin: 1.6rem auto 0;
+    background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
+    position: relative;
+}
+
+.header__ornament::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    background: var(--gold);
+    transform: translate(-50%, -50%) rotate(45deg);
+    box-shadow: 0 0 8px rgba(201, 168, 76, 0.4);
+}
+
+
+/* ============================================
+   Cards — Shared
+   ============================================ */
+.card {
+    position: relative;
+    border-radius: 2px;
+    padding: var(--card-pad);
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+
+/* ============================================
+   Card — Norns (Puzzle 1)
+   ============================================ */
+.card--norns {
+    background:
+        repeating-linear-gradient(
+            52deg,
+            transparent,
+            transparent 24px,
+            rgba(201, 168, 76, 0.012) 24px,
+            rgba(201, 168, 76, 0.012) 25px
+        ),
+        repeating-linear-gradient(
+            -52deg,
+            transparent,
+            transparent 24px,
+            rgba(201, 168, 76, 0.012) 24px,
+            rgba(201, 168, 76, 0.012) 25px
+        ),
+        linear-gradient(180deg, rgba(15, 15, 26, 0.95), rgba(12, 12, 22, 0.98));
+    border: 1px solid rgba(201, 168, 76, 0.12);
+    box-shadow:
+        0 0 30px rgba(201, 168, 76, 0.04),
+        inset 0 0 30px rgba(201, 168, 76, 0.02),
+        0 12px 45px rgba(0, 0, 0, 0.4);
+}
+
+.card--norns:hover {
+    border-color: rgba(201, 168, 76, 0.2);
+    box-shadow:
+        0 0 45px rgba(201, 168, 76, 0.08),
+        inset 0 0 40px rgba(201, 168, 76, 0.03),
+        0 18px 55px rgba(0, 0, 0, 0.5);
+}
+
+/* Corner ornaments */
+.card__corners {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.corner {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    transition: border-color 0.5s ease;
+}
+
+.corner--tl {
+    top: 12px;
+    left: 12px;
+    border-top: 1.5px solid var(--gold-dim);
+    border-left: 1.5px solid var(--gold-dim);
+}
+
+.corner--tr {
+    top: 12px;
+    right: 12px;
+    border-top: 1.5px solid var(--gold-dim);
+    border-right: 1.5px solid var(--gold-dim);
+}
+
+.corner--bl {
+    bottom: 12px;
+    left: 12px;
+    border-bottom: 1.5px solid var(--gold-dim);
+    border-left: 1.5px solid var(--gold-dim);
+}
+
+.corner--br {
+    bottom: 12px;
+    right: 12px;
+    border-bottom: 1.5px solid var(--gold-dim);
+    border-right: 1.5px solid var(--gold-dim);
+}
+
+.card--norns:hover .corner {
+    border-color: var(--gold);
+}
+
+/* Card inner content */
+.card__inner {
+    position: relative;
+    z-index: 2;
+}
+
+/* Emblem rune */
+.card__emblem {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 1.25rem;
+    text-shadow: 0 0 15px rgba(201, 168, 76, 0.25);
+    opacity: 0.4;
+    line-height: 1;
+}
+
+/* Prose text */
+.prose {
+    font-family: var(--font-body);
+    font-size: clamp(1.05rem, 2.5vw, 1.2rem);
+    line-height: 1.85;
+    color: var(--text);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.prose:last-child {
+    margin-bottom: 0;
+}
+
+.prose--lead {
+    font-size: clamp(1.1rem, 2.8vw, 1.3rem);
+    font-style: italic;
+    color: var(--text-muted);
+    font-weight: 300;
+}
+
+.prose--emphasis {
+    font-weight: 500;
+}
+
+.prose--diminished {
+    font-size: 0.88em;
+    color: var(--text-dim);
+    font-style: italic;
+}
+
+.prose--question {
+    font-family: var(--font-heading);
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 12px rgba(201, 168, 76, 0.2);
+    animation: pulseGlow 4s ease-in-out infinite;
+}
+
+/* Norn name highlights */
+.norn {
+    color: var(--gold);
+    font-weight: 600;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+}
+
+.norn--active {
+    text-shadow: 0 0 10px rgba(201, 168, 76, 0.35);
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+
+/* Dividers */
+.divider {
+    width: 40%;
+    max-width: 180px;
+    height: 1px;
+    margin: 1.75rem auto;
+    background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
+    opacity: 0.45;
+}
+
+
+/* ============================================
+   Card — Document (Puzzle 2)
+   ============================================ */
+.card--document {
+    background: linear-gradient(180deg, var(--parchment), rgba(22, 20, 14, 0.95));
+    border: 1px solid rgba(160, 140, 100, 0.1);
+    box-shadow:
+        0 0 20px rgba(0, 0, 0, 0.5),
+        inset 0 0 40px rgba(0, 0, 0, 0.3),
+        0 12px 45px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.card--document:hover {
+    border-color: rgba(160, 140, 100, 0.18);
+    box-shadow:
+        0 0 30px rgba(0, 0, 0, 0.6),
+        inset 0 0 50px rgba(0, 0, 0, 0.2),
+        0 18px 55px rgba(0, 0, 0, 0.6);
+}
+
+/* Document header */
+.document__header {
+    text-align: center;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(160, 140, 100, 0.1);
+    position: relative;
+}
+
+.document__stamp {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--stamp-red);
+    border: 1.5px solid rgba(160, 50, 50, 0.25);
+    padding: 3px 10px;
+    transform: rotate(3deg);
+    line-height: 1.3;
+}
+
+.document__title {
+    font-family: var(--font-mono);
+    font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: var(--parchment-text);
+    margin-bottom: 0.3rem;
+}
+
+.document__subtitle {
+    font-family: var(--font-mono);
+    font-size: clamp(0.65rem, 1.8vw, 0.75rem);
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+}
+
+.document__classification {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-top: 0.8rem;
+    opacity: 0.6;
+}
+
+/* Document body */
+.document__body {
+    position: relative;
+}
+
+.document__text {
+    font-family: var(--font-mono);
+    font-size: clamp(0.78rem, 2.2vw, 0.9rem);
+    line-height: 1.85;
+    color: var(--parchment-text);
+    margin-bottom: 0.5rem;
+}
+
+/* Damaged / burned sections */
+.damaged {
+    padding: 0.5rem 1rem;
+    margin: 0.75rem 0;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(80, 50, 20, 0.15) 15%,
+        rgba(80, 50, 20, 0.22) 50%,
+        rgba(80, 50, 20, 0.15) 85%,
+        transparent 100%
+    );
+    border-left: 2px solid rgba(180, 120, 40, 0.15);
+    border-right: 2px solid rgba(180, 120, 40, 0.15);
+}
+
+.damaged--burned {
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(100, 30, 10, 0.18) 10%,
+        rgba(60, 15, 5, 0.3) 50%,
+        rgba(100, 30, 10, 0.18) 90%,
+        transparent 100%
+    );
+    border-left-color: rgba(200, 60, 20, 0.12);
+    border-right-color: rgba(200, 60, 20, 0.12);
+}
+
+.damaged__label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--gold-dim);
+    letter-spacing: 0.08em;
+    opacity: 0.6;
+}
+
+.damaged--burned .damaged__label {
+    color: rgba(200, 100, 40, 0.55);
+}
+
+/* Burn edge at bottom of document */
+.document__burn-edge {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(
+        to top,
+        rgba(12, 8, 4, 0.65) 0%,
+        rgba(25, 14, 6, 0.25) 45%,
+        transparent 100%
+    );
+    pointer-events: none;
+    border-radius: 0 0 2px 2px;
+}
+
+
+/* ============================================
+   Section Divider
+   ============================================ */
+.section-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 2.5rem 0;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.section-divider::before,
+.section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+}
+
+.section-divider::before {
+    background: linear-gradient(to right, transparent, var(--gold-dim));
+}
+
+.section-divider::after {
+    background: linear-gradient(to left, transparent, var(--gold-dim));
+}
+
+.section-divider__rune {
+    color: var(--gold);
+    font-size: 1.15rem;
+    opacity: 0.45;
+    animation: shimmer 6s ease-in-out infinite;
+}
+
+
+/* ============================================
+   Footer
+   ============================================ */
+.footer {
+    text-align: center;
+    padding-top: clamp(2rem, 6vh, 4rem);
+}
+
+.footer__runes {
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    color: var(--text-dim);
+    opacity: 0.25;
+    user-select: none;
+    word-spacing: 0.2em;
+}
+
+
+/* ============================================
+   Reveal Animations
+   ============================================ */
+html.js .reveal {
+    opacity: 0;
+    transform: translateY(25px);
+    animation: revealUp 0.9s ease-out forwards;
+    animation-delay: var(--delay, 0s);
+}
+
+
+/* ============================================
+   Keyframes
+   ============================================ */
+@keyframes revealUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes titleLetters {
+    to {
+        letter-spacing: 0.2em;
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(201, 168, 76, 0.15);
+    }
+    50% {
+        text-shadow:
+            0 0 18px rgba(201, 168, 76, 0.35),
+            0 0 40px rgba(201, 168, 76, 0.1);
+    }
+}
+
+@keyframes fogDrift1 {
+    from { transform: translateX(0); }
+    to { transform: translateX(5%); }
+}
+
+@keyframes fogDrift2 {
+    from { transform: translateX(0); }
+    to { transform: translateX(-4%); }
+}
+
+@keyframes treeBreathe {
+    0%, 100% { opacity: 0.025; }
+    50% { opacity: 0.045; }
+}
+
+@keyframes shimmer {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.75; }
+}
+
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 520px) {
+    .corner {
+        width: 18px;
+        height: 18px;
+    }
+
+    .corner--tl, .corner--tr { top: 8px; }
+    .corner--tl, .corner--bl { left: 8px; }
+    .corner--tr, .corner--br { right: 8px; }
+    .corner--bl, .corner--br { bottom: 8px; }
+
+    .header__ornament {
+        width: 120px;
+    }
+
+    .document__stamp {
+        position: static;
+        display: inline-block;
+        transform: rotate(2deg);
+        margin-bottom: 0.75rem;
+    }
+
+    .card__emblem {
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .page {
+        max-width: 800px;
+    }
+}
